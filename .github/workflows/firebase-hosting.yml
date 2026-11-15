@@ -14,7 +14,7 @@ jobs:
         include:
           - project: "chat-67-67"
             site: "slope3"        
-
+            
     steps:
       - uses: actions/checkout@v4
 
