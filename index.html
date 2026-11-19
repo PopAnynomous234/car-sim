@@ -20,6 +20,33 @@
   #home, #loadingScreen { position:fixed; inset:0; z-index:20; display:grid; place-items:center; background:linear-gradient(135deg,#050609 0%,#11131b 55%,#050609 100%); }
   #home { display:none; overflow:auto; padding:32px; }
   .home-card { width:min(1060px,100%); padding:clamp(24px,5vw,58px); border:1px solid var(--line); border-radius:32px; background:rgba(255,255,255,.055); box-shadow:0 30px 100px rgba(0,0,0,.45),inset 0 1px rgba(255,255,255,.1); backdrop-filter:blur(24px); }
+  .garage { display:grid; grid-template-columns:90px 1fr 90px; align-items:center; gap:18px; margin:34px 0; }
+  .garage-stage { min-height:180px; display:grid; place-items:center; text-align:center; border-radius:24px; background:radial-gradient(circle,rgba(255,255,255,.18),transparent 62%),linear-gradient(145deg,rgba(255,255,255,.1),rgba(255,255,255,.025)); }
+  #carPreview { width:100%; height:180px; display:block; }
+  .car-name { font-family:'Space Grotesk'; font-size:28px; margin-top:10px; }
+  .arrow { width:64px; height:64px; border-radius:50%; font-size:28px; }
+  .play { padding:18px 28px; min-width:220px; font-size:18px; font-weight:700; border-radius:16px; }
+  .map-stage { display:none; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; margin-top:30px; }
+  .map-stage.visible { display:grid; }
+  .map-choice { min-height:220px; text-align:left; padding:14px; border-radius:22px; background:linear-gradient(135deg,rgba(255,255,255,.14),rgba(255,255,255,.03)); }
+  .map-preview { width:100%; height:145px; display:block; border-radius:14px; background:#141820; }
+  .map-choice.selected { outline:2px solid #fff; }
+  .map-choice strong { display:block; font-family:'Space Grotesk'; font-size:25px; margin:10px 0 4px; }
+  #settings { display:none; z-index:30; top:50%; left:50%; transform:translate(-50%,-50%); width:min(420px,calc(100% - 32px)); }
+  #settings.open { display:block; }
+  .setting-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  .setting-row select { color:var(--ink); background:#171922; border:1px solid var(--line); border-radius:8px; padding:7px; }
+  #touchControls { position:fixed; inset:auto 18px 18px 18px; display:none; justify-content:space-between; pointer-events:none; z-index:12; }
+  .touch-cluster { display:flex; gap:10px; pointer-events:auto; }
+  .touch-btn { width:64px; height:58px; font-size:20px; touch-action:none; }
+  #speedometer { position:fixed; top:18px; right:285px; width:154px; height:154px; display:grid; place-items:center; border-radius:50%; background:conic-gradient(from 220deg,#eef8ff 0 26%,#54c6db 43%,#8fe8ec 67%,#ff754f 84%,rgba(255,255,255,.1) 0); box-shadow:0 12px 35px rgba(0,0,0,.25); }
+  #speedometer::after { content:""; position:absolute; inset:10px; border-radius:50%; background:radial-gradient(circle at 50% 80%,#293b49,#101820 65%); border:2px solid rgba(255,255,255,.55); }
+  #speedometer::before { content:""; position:absolute; inset:18px; border-radius:50%; background:repeating-conic-gradient(from 220deg,rgba(255,255,255,.9) 0 1deg,transparent 1deg 8deg); mask:radial-gradient(transparent 0 78%,#000 80%); z-index:1; }
+  .speed-fill { position:absolute; z-index:2; bottom:25px; left:50%; width:12px; height:45px; border-radius:8px; background:#ff684d; transform-origin:50% 100%; transform:translateX(-50%) rotate(-42deg); transition:transform .08s linear; }
+  #speedReadout { position:relative; z-index:3; text-align:center; font-family:'Space Grotesk'; font-size:34px; font-weight:700; }
+  #speedReadout small { display:block; font:11px 'DM Sans'; color:var(--muted); letter-spacing:.14em; }
+  #fps { position:fixed; top:8px; left:50%; transform:translateX(-50%); color:#fff; font:11px monospace; opacity:.8; z-index:12; }
+  #driftToggle { min-width:90px; }
   .eyebrow { color:var(--muted); font-size:11px; letter-spacing:.22em; text-transform:uppercase; }
   h1,h2,h3 { font-family:'Space Grotesk',sans-serif; margin:0; letter-spacing:-.04em; }
   h1 { font-size:clamp(42px,8vw,82px); line-height:.95; max-width:760px; margin:14px 0 18px; }
@@ -34,7 +61,7 @@
   .loader-ring { width:54px; height:54px; margin:24px auto; border:2px solid rgba(255,255,255,.15); border-top-color:#fff; border-radius:50%; animation:spin 1s linear infinite; }
   .loading-detail { color:var(--muted); font-size:13px; }
   @keyframes spin { to { transform:rotate(360deg); } }
-  @media (max-width:700px) { .choices { grid-template-columns:1fr; } .home-card { padding:28px 20px; } }
+  @media (max-width:700px) { .map-stage { grid-template-columns:1fr; } .home-card { padding:28px 20px; } #speedometer { right:16px; transform:scale(.8); transform-origin:top right; } #stats { display:none; } .garage { grid-template-columns:56px 1fr 56px; gap:8px; } .arrow { width:52px; height:52px; } }
   #minimap { position:fixed; top:16px; left:16px; width:200px; height:200px; border-radius:50%; border:3px solid rgba(255,255,255,.9); box-shadow:0 0 14px rgba(0,0,0,.65); background:#2b3d2b; }
   #cams { position:fixed; top:14px; left:50%; transform:translateX(-50%); display:flex; gap:6px; }
   #stats { top:16px; right:16px; width:250px; }
@@ -47,7 +74,7 @@
   .bar i.red { background:#ff3b30; }
   #money { font-size:20px; color:#7dff8a; }
   #lap { color:#ffd400; font-weight:600; }
-  #speed { font-size:46px; font-weight:700; color:#ff6a00; line-height:1; }
+  #speed { display:none; }
   .unit { font-size:12px; opacity:.8; margin-bottom:6px; }
   #gear { display:inline-block; min-width:44px; font-size:30px; font-weight:700; border:2px solid #fff; border-radius:8px; padding:0 8px; margin-right:8px; }
   #surface { height:16px; font-size:12px; font-weight:700; color:#ff9a3c; margin-top:4px; }
@@ -70,23 +97,19 @@
   <section id="home">
     <div class="home-card">
       <div class="eyebrow">Car Simulator in browser</div>
-      <h1>Choose your drive.</h1>
-      <p class="lead">Pick a world and a machine. Smooth handling, cinematic glass UI, and a road that keeps your car where it belongs.</p>
-      <div class="choices">
-        <button class="choice selected" data-choice="map" data-value="racetrack">
-          <span class="eyebrow">Map 01</span><strong>Racetrack</strong><small>Fast laps, sweeping corners, built for speed.</small>
-        </button>
-        <button class="choice" data-choice="map" data-value="city">
-          <span class="eyebrow">Map 02</span><strong>City</strong><small>Urban streets, walls, and a new place to explore.</small>
-        </button>
-        <button class="choice selected" data-choice="car" data-value="tesla">
-          <span class="eyebrow">Car 01 · Default</span><strong>Tesla X</strong><small>Electric power and balanced control.</small>
-        </button>
-        <button class="choice" data-choice="car" data-value="mclaren">
-          <span class="eyebrow">Car 02</span><strong>McLaren</strong><small>Lightweight, sharp, and made for the apex.</small>
-        </button>
+      <h1 id="homeTitle">Your garage.</h1>
+      <p class="lead">Choose a car, then pick a world and drive.</p>
+      <div class="garage">
+        <button id="carPrev" class="arrow" aria-label="Previous car">←</button>
+        <div class="garage-stage"><div><canvas id="carPreview" width="640" height="360"></canvas><div id="carName" class="car-name">Tesla X</div></div></div>
+        <button id="carNext" class="arrow" aria-label="Next car">→</button>
       </div>
-      <button id="launch" class="launch primary">Enter the simulator <span>→</span></button>
+      <button id="play" class="play primary">PLAY</button>
+      <div id="mapStage" class="map-stage">
+        <button class="map-choice selected" data-map="racetrack"><canvas id="racetrackPreview" class="map-preview" width="640" height="260"></canvas><span class="eyebrow">Map 01</span><strong>Racetrack</strong><small>Fast laps and sweeping corners.</small></button>
+        <button class="map-choice" data-map="city"><canvas id="cityPreview" class="map-preview" width="640" height="260"></canvas><span class="eyebrow">Map 02</span><strong>City</strong><small>Urban streets and open exploration.</small></button>
+      </div>
+      <button id="launch" class="launch primary" style="display:none">Enter the simulator <span>→</span></button>
     </div>
   </section>
   <canvas id="minimap" width="200" height="200"></canvas>
@@ -98,35 +121,32 @@
   </div>
 
   <div id="stats" class="panel">
-    <div id="money">$0</div>
     <div id="lap"></div>
     <div id="lapBest" style="font-size:12px"></div>
-    Fuel <span id="fuelTxt"></span>
-    <div class="bar"><i id="fuelBar"></i></div>
-    Nitro
-    <div class="bar"><i id="nitroBar" class="blue"></i></div>
     <div id="timeTxt"></div>
-    <div id="tuneTxt"></div>
-    <div id="mission"></div>
+    <button id="settingsButton">⚙ Settings</button>
   </div>
 
   <div id="dash" class="panel">
-    <div id="speed">0</div>
-    <div class="unit">MPH</div>
     <span id="gear">N</span><button id="gearMode">AUTO</button>
     <div class="bar" style="margin-top:8px"><i id="rpmBar"></i></div>
     <div id="rpmTxt" style="font-size:12px">0 RPM</div>
     <div id="surface"></div>
   </div>
 
-  <div id="help" class="panel">
-    <b>W/S</b> gas/brake-reverse &nbsp; <b>A/D</b> steer &nbsp; <b>Space</b> handbrake<br>
-    <b>Shift</b> nitro &nbsp; <b>H</b> horn &nbsp; <b>L</b> lights &nbsp; <b>R</b> back to start line<br>
-    <b>K</b> set respawn here &nbsp; <b>G</b> auto/manual gears &nbsp; <b>1-5</b> gear (manual)<br>
-    <b>C</b> / Numpad1-3 / buttons: camera<br>
-    <b>N</b> time of day &nbsp; <b>M</b> map zoom &nbsp; <b>X</b> sound<br>
-    <b>T</b> delivery job &nbsp; <b>P</b> paint &nbsp; <b>U</b> engine upgrade<br>
-    <b>O</b> move gas station here &nbsp; <b>B</b> cockpit body &nbsp; <b>I</b> hide help
+  <div id="speedometer"><div id="speedFill" class="speed-fill"></div><div id="speedReadout">0<small>KM/H</small></div></div>
+  <div id="fps">FPS --</div>
+  <div id="touchControls">
+    <div class="touch-cluster"><button class="touch-btn" data-key="KeyA">←</button><button class="touch-btn" data-key="KeyD">→</button></div>
+    <div class="touch-cluster"><button class="touch-btn" data-key="Space">DRIFT</button><button class="touch-btn" data-key="KeyS">▼</button><button class="touch-btn" data-key="KeyW">▲</button></div>
+  </div>
+  <div id="settings" class="panel">
+    <h3>Settings</h3>
+    <div class="setting-row"><span>Drift assist</span><button id="driftToggle" class="on">ON</button></div>
+    <div class="setting-row"><span>Quality</span><select id="qualitySelect"><option value="720">720p</option><option value="1080" selected>1080p</option><option value="1440">1440p</option></select></div>
+    <div class="setting-row"><span>Camera</span><button id="cameraButton">CHASE</button></div>
+    <div class="setting-row"><span>Time of day</span><button id="timeButton">DAY</button></div>
+    <button id="closeSettings" class="launch primary">Done</button>
   </div>
 
   <div id="toast"></div>
@@ -163,6 +183,7 @@ const CFG = {
   VIEW_DISTANCE: 2000,
   MAX_PIXEL_RATIO: 1.25,           // dynamic resolution range (auto-adjusts to keep ~45-60 fps)
   MIN_PIXEL_RATIO: 0.6,
+  QUALITY: 1080,
 
   START_MONEY: 500,
   TANK: 60,
@@ -320,6 +341,7 @@ let spawn = { x: line.x - line.fx * CFG.START_BEHIND, z: line.z - line.fz * CFG.
 
 const gas = { x: line.x + line.fx * CFG.GAS_AHEAD, z: line.z + line.fz * CFG.GAS_AHEAD, y: line.y };
 const gasMarker = makeBeam(0xffd000);
+gasMarker.visible = false;
 gasMarker.position.set(gas.x, gas.y, gas.z);
 const missionMarker = makeBeam(0x39ff6a);
 missionMarker.visible = false;
@@ -331,6 +353,62 @@ const loader = new GLTFLoader();
 loader.setDRACOLoader(dracoLoader);
 let selectedMap = 'racetrack';
 let selectedCar = 'tesla';
+const preview = {
+  car: { scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(28, 640 / 360, 0.1, 1000), root: new THREE.Group(), renderer: new THREE.WebGLRenderer({ canvas: $('carPreview'), alpha: true, antialias: true }) },
+  maps: {}
+};
+preview.car.scene.add(preview.car.root, new THREE.HemisphereLight(0xffffff, 0x334455, 2));
+preview.car.scene.add(new THREE.DirectionalLight(0xffffff, 2));
+preview.car.camera.position.set(0, 2.2, 7);
+preview.car.camera.lookAt(0, 0.8, 0);
+preview.car.renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
+preview.car.renderer.setSize(640, 360, false);
+const previewMap = (id, file, canvas) => {
+  const item = {
+    scene: new THREE.Scene(),
+    camera: new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 5000),
+    root: new THREE.Group(),
+    renderer: new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false })
+  };
+  item.scene.add(item.root, new THREE.HemisphereLight(0xffffff, 0x334455, 2));
+  item.renderer.setPixelRatio(1);
+  item.renderer.setSize(640, 260, false);
+  preview.maps[id] = item;
+  loader.load(file, (gltf) => {
+    item.root.add(gltf.scene);
+    gltf.scene.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(gltf.scene);
+    const center = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+    gltf.scene.position.sub(center);
+    const extent = Math.max(size.x, size.z) * 0.56;
+    item.camera.left = -extent; item.camera.right = extent; item.camera.top = extent * 260 / 640; item.camera.bottom = -item.camera.top;
+    item.camera.position.set(0, Math.max(size.y, 100) + 50, 0);
+    item.camera.up.set(0, 0, -1); item.camera.lookAt(0, 0, 0); item.camera.updateProjectionMatrix();
+    item.ready = true;
+  }, undefined, (err) => console.warn(`Preview failed for ${file}`, err));
+};
+preview.car.models = {};
+function loadCarPreview(id) {
+  const existing = preview.car.models[id];
+  if (existing) { preview.car.root.clear(); preview.car.root.add(existing); preview.car.ready = true; return; }
+  const file = id === 'mclaren' ? './mclaren.glb' : './tesla_x.glb';
+  loader.load(file, (gltf) => {
+    gltf.scene.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(gltf.scene), size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
+    gltf.scene.position.sub(center);
+    gltf.scene.scale.setScalar(4.5 / Math.max(size.x, size.y, size.z));
+    preview.car.models[id] = gltf.scene;
+    preview.car.root.clear(); preview.car.root.add(gltf.scene); preview.car.ready = true;
+  }, undefined, (err) => console.warn(`Car preview failed for ${file}`, err));
+}
+loadCarPreview('tesla');
+let previewsLoaded = false;
+function loadMapPreviews() {
+  if (previewsLoaded) return;
+  previewsLoaded = true;
+  previewMap('racetrack', './racetrack.glb', $('racetrackPreview'));
+  previewMap('city', './city.glb', $('cityPreview'));
+}
 
 let racetrack = null;
 const trackBox = new THREE.Box3();
@@ -343,6 +421,7 @@ function checkReady() {
     setStatus(''); readyAt = performance.now();
     $('loadingScreen').style.display = 'none';
     $('home').style.display = 'none';
+    $('touchControls').style.display = 'flex';
     gameStarted = true;
     resetCar();
     toast('Ready! Start line ahead. Press I to hide the controls', 4);
@@ -705,14 +784,28 @@ loader.load(CFG.CAR_FILE, (gltf) => {
 }, undefined, (err) => { console.error(err); setStatus(`Error loading ${CFG.CAR_FILE} (check filename)`); });
 }
 
-document.querySelectorAll('.choice').forEach((button) => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll(`.choice[data-choice="${button.dataset.choice}"]`).forEach((item) => item.classList.remove('selected'));
-    button.classList.add('selected');
-    if (button.dataset.choice === 'map') selectedMap = button.dataset.value;
-    else selectedCar = button.dataset.value;
-  });
+const cars = [
+  { id: 'tesla', name: 'Tesla X', mark: '🚘' },
+  { id: 'mclaren', name: 'McLaren', mark: '🏎' }
+];
+let carIndex = 0;
+function showCar() {
+  const c = cars[carIndex]; selectedCar = c.id;
+  $('carName').textContent = c.name;
+  loadCarPreview(c.id);
+}
+$('carPrev').addEventListener('click', () => { carIndex = (carIndex + cars.length - 1) % cars.length; showCar(); });
+$('carNext').addEventListener('click', () => { carIndex = (carIndex + 1) % cars.length; showCar(); });
+$('play').addEventListener('click', () => {
+  $('homeTitle').textContent = 'Choose your world.';
+  $('mapStage').classList.add('visible');
+  $('play').style.display = 'none'; $('launch').style.display = 'block';
+  loadMapPreviews();
 });
+document.querySelectorAll('.map-choice').forEach((button) => button.addEventListener('click', () => {
+  document.querySelectorAll('.map-choice').forEach((item) => item.classList.remove('selected'));
+  button.classList.add('selected'); selectedMap = button.dataset.map;
+}));
 $('launch').addEventListener('click', () => {
   CFG.TRACK_FILE = selectedMap === 'city' ? './city.glb' : './racetrack.glb';
   CFG.CAR_FILE = selectedCar === 'mclaren' ? './mclaren.glb' : './tesla_x.glb';
@@ -720,6 +813,7 @@ $('launch').addEventListener('click', () => {
   $('loadingScreen').style.display = 'grid';
   loadSelectedAssets();
 });
+showCar();
 
 // ===================== TOAST / UI =====================
 let toastTimer = 0;
@@ -740,7 +834,7 @@ const car = {
   x: spawn.x, y: spawn.y, z: spawn.z, h: spawn.h, vx: 0, vz: 0, vy: 0, vf: 0, vl: 0, steer: 0, throttle: 0,
   grounded: true, surf: 0, slope: 0, tiltP: 0, tiltR: 0, noGround: 0,
   gear: 1, auto: true, shift: 0, shiftCd: 0, rpm: IDLE,
-  fuel: CFG.TANK, nitro: 1, driftPts: 0, driftGap: 0, ax: 0, noFuelWarned: false, refuelling: false, squeal: 0, braking: false, nitroOn: false
+  driftPts: 0, driftGap: 0, ax: 0, squeal: 0, braking: false
 };
 let camSnap = true;
 
@@ -754,7 +848,6 @@ function resetCar() {
   car.y = g > -Infinity ? g : spawn.y;
   lap.running = false; lap.t = 0; lap.maxDist = 0; lap.prevS = lapS();
   camSnap = true;
-  if (car.fuel < 5) { car.fuel = 5; toast('Reset (emergency 5 L of fuel)'); }
 }
 function toggleGearMode() {
   car.auto = !car.auto;
@@ -777,15 +870,43 @@ function upgradeEngine() {
 // ===================== INPUT =====================
 const keys = {};
 let camMode = 0, hideBody = CFG.HIDE_BODY_IN_COCKPIT, mapZoomIdx = 1, muted = false;
+let driftEnabled = true;
 const ZOOMS = [250, 500, 1000, 2000];
 
 function setCam(i, quiet) {
   camMode = i;
   document.querySelectorAll('#cams button').forEach((b) => b.classList.toggle('on', +b.dataset.cam === i));
+  $('cameraButton').textContent = ['CHASE', 'COCKPIT', 'SIDE'][i];
   if (!quiet) toast(['Chase camera', 'Cockpit camera', 'Side camera'][i], 1.1);
 }
 document.querySelectorAll('#cams button').forEach((b) => b.addEventListener('click', () => { setCam(+b.dataset.cam); b.blur(); }));
 $('gearMode').addEventListener('click', (e) => { toggleGearMode(); e.target.blur(); });
+function holdKey(code, held) { keys[code] = held; if (held) initAudio(); }
+document.querySelectorAll('.touch-btn').forEach((button) => {
+  const code = button.dataset.key;
+  button.addEventListener('pointerdown', (e) => { e.preventDefault(); button.setPointerCapture(e.pointerId); holdKey(code, true); });
+  button.addEventListener('pointerup', () => holdKey(code, false));
+  button.addEventListener('pointercancel', () => holdKey(code, false));
+  button.addEventListener('pointerleave', () => holdKey(code, false));
+});
+function applyQuality(value) {
+  CFG.QUALITY = +value;
+  const scale = CFG.QUALITY / 1080;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, CFG.MAX_PIXEL_RATIO) * Math.min(scale, 1));
+  renderer.setSize(innerWidth * scale, innerHeight * scale, false);
+  pixelRatio = Math.min(devicePixelRatio, CFG.MAX_PIXEL_RATIO) * Math.min(scale, 1);
+}
+$('settingsButton').addEventListener('click', () => $('settings').classList.add('open'));
+$('closeSettings').addEventListener('click', () => $('settings').classList.remove('open'));
+$('driftToggle').addEventListener('click', (e) => {
+  driftEnabled = !driftEnabled; e.currentTarget.textContent = driftEnabled ? 'ON' : 'OFF';
+  e.currentTarget.classList.toggle('on', driftEnabled);
+});
+$('qualitySelect').addEventListener('change', (e) => applyQuality(e.target.value));
+$('cameraButton').addEventListener('click', () => setCam((camMode + 1) % 3));
+$('timeButton').addEventListener('click', cycleTOD);
+$('qualitySelect').value = String(CFG.QUALITY);
+applyQuality(CFG.QUALITY);
 
 function cycleTOD() {
   todIdx = (todIdx + 1) % TODS.length;
@@ -836,7 +957,7 @@ addEventListener('keydown', (e) => {
     case 'KeyU': upgradeEngine(); break;
     case 'KeyO': gas.x = car.x; gas.y = car.y; gas.z = car.z; gasMarker.position.set(gas.x, gas.y, gas.z); toast('Gas station moved here'); break;
     case 'KeyX': muted = !muted; if (master) master.gain.value = muted ? 0 : 1; toast(muted ? 'Sound OFF' : 'Sound ON', 1); break;
-    case 'KeyI': { const h = $('help'); h.style.display = h.style.display === 'none' ? '' : 'none'; break; }
+    case 'KeyI': $('settings').classList.toggle('open'); break;
     case 'KeyB': hideBody = !hideBody; toast(hideBody ? 'Cockpit: body hidden' : 'Cockpit: body visible', 1.2); break;
     default:
       if (!car.auto && /^Digit[1-5]$/.test(e.code)) requestGear(+e.code.slice(5));   // manual gearbox only
@@ -847,7 +968,8 @@ addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+  const scale = CFG.QUALITY / 1080;
+  renderer.setSize(innerWidth * scale, innerHeight * scale, false);
 });
 
 // ===================== AUDIO (WebAudio, no files) =====================
@@ -881,7 +1003,7 @@ function updateAudio() {
   eng1.frequency.setTargetAtTime(f, t, 0.05);
   eng2.frequency.setTargetAtTime(f * 0.5, t, 0.05);
   engFilter.frequency.setTargetAtTime(500 + car.rpm * 0.25 + car.throttle * 600, t, 0.05);
-  engGain.gain.setTargetAtTime(car.fuel > 0 ? 0.035 + car.throttle * 0.05 : 0, t, 0.08);
+  engGain.gain.setTargetAtTime(0.035 + car.throttle * 0.05, t, 0.08);
   noiseGain.gain.setTargetAtTime(car.squeal, t, 0.05);
   hornGain.gain.setTargetAtTime(keys.KeyH ? 0.06 : 0, t, 0.02);
 }
@@ -904,10 +1026,9 @@ function stepCar(dt) {
     return;
   }
   const up = keys.KeyW || keys.ArrowUp, down = keys.KeyS || keys.ArrowDown;
-  const hand = !!keys.Space;
+  const hand = driftEnabled && !!keys.Space;
   const steerIn = ((keys.KeyA || keys.ArrowLeft) ? 1 : 0) - ((keys.KeyD || keys.ArrowRight) ? 1 : 0);
-  const hasFuel = car.fuel > 0;
-  const throttle = (up && hasFuel) ? 1 : 0;
+  const throttle = up ? 1 : 0;
   car.throttle = throttle;
   const surf = car.surf;
 
@@ -915,7 +1036,8 @@ function stepCar(dt) {
   car.steer += (steerIn - car.steer) * (1 - Math.exp(-7 * dt));
   const sp = Math.abs(car.vf);
   let yaw = car.steer * 1.7 * Math.min(sp / 8, 1) / (1 + (sp / 45) ** 2);
-  if (hand && sp > 8) yaw *= 1.35;
+  const driftActive = hand && sp > 8 && Math.abs(steerIn) > 0;
+  if (driftActive) yaw *= 1.75;
   car.h += yaw * Math.sign(car.vf || 1) * dt;
 
   // car-frame velocity
@@ -934,21 +1056,20 @@ function stepCar(dt) {
   }
 
   // longitudinal
-  const nitroOn = !!(keys.ShiftLeft || keys.ShiftRight) && car.nitro > 0.02 && throttle && vf > 3;
-  const gm = GEAR_MAX[car.gear - 1] * (nitroOn ? 1.06 : 1);
+  const gm = GEAR_MAX[car.gear - 1];
   let braking = false, applied = true;
   if (throttle) {
     if (vf < -0.5) { vf += 24 * dt; braking = true; }
     else if (car.shift <= 0) {
       if (vf <= gm) {
         const ratio = Math.max(vf, 0) / gm;
-        const a = GEAR_ACC[car.gear - 1] * torque(ratio) * (ratio < 0.12 ? 0.6 : 1) * accelMult() * (nitroOn ? 1.8 : 1);
+        const a = GEAR_ACC[car.gear - 1] * torque(ratio) * (ratio < 0.12 ? 0.6 : 1) * accelMult();
         vf = Math.min(vf + a * dt, gm);
       } else vf -= 18 * dt;                    // over-rev engine braking (manual downshift)
     } else applied = false;                    // clutch in during shift
   } else if (down) {
     if (vf > 0.5) { vf -= 24 * dt; braking = true; }
-    else if (hasFuel) vf = Math.max(vf - 4.5 * dt, -REV_MAX);
+    else if (car.shift <= 0) vf = Math.max(vf - 4.5 * dt, -REV_MAX);
     else applied = false;
   } else applied = false;
 
@@ -957,7 +1078,7 @@ function stepCar(dt) {
     vf -= Math.sign(vf) * Math.min(Math.abs(vf), d);
   }
   if (hand) {
-    vf -= Math.sign(vf) * Math.min(Math.abs(vf), 14 * dt);
+    vf -= Math.sign(vf) * Math.min(Math.abs(vf), 3.5 * dt);
     braking = true;
   }
   car.braking = braking;
@@ -970,8 +1091,9 @@ function stepCar(dt) {
   if (car.grounded) vf -= 4.9 * THREE.MathUtils.clamp(car.slope, -0.4, 0.4) * dt;
 
   // lateral grip (handbrake = slide, off-track = less grip)
-  const grip = (hand && sp > 3) ? 0.9 : (surf === 0 ? 9 : surf === 1 ? 5.5 : 3.5);
+  const grip = driftActive ? 0.18 : (hand && sp > 3 ? 0.5 : (surf === 0 ? 9 : surf === 1 ? 5.5 : 3.5));
   vl *= Math.exp(-grip * dt);
+  if (driftActive) vl += steerIn * Math.abs(vf) * 1.35 * dt;
 
   // integrate
   car.vx = fx * vf + rx * vl;
@@ -1022,14 +1144,6 @@ function stepCar(dt) {
   car.tiltP += (tPitch - car.tiltP) * kt;
   car.tiltR += (tRoll - car.tiltR) * kt;
 
-  // fuel & nitro
-  const burn = 0.015 + throttle * (0.04 + 0.0006 * Math.abs(vf)) + (nitroOn ? 0.05 : 0);
-  car.fuel = Math.max(0, car.fuel - burn * dt);
-  if (car.fuel <= 0 && !car.noFuelWarned) { car.noFuelWarned = true; toast('Out of fuel! Drive to the yellow gas station (or press R)', 4); }
-  if (car.fuel > 1) car.noFuelWarned = false;
-  car.nitro = nitroOn ? Math.max(0, car.nitro - 0.28 * dt) : Math.min(1, car.nitro + 0.06 * dt);
-  car.nitroOn = nitroOn;
-
   // RPM
   let ratio = vf < -0.3 ? -vf / REV_MAX : Math.max(vf, 0) / GEAR_MAX[car.gear - 1];
   let r01 = ratio + (ratio < 0.3 ? (1 - ratio) * throttle * 0.12 : 0);
@@ -1043,7 +1157,7 @@ function stepCar(dt) {
   else if (car.driftPts > 0) {
     car.driftGap += dt;
     if (car.driftGap > 1.0) {
-      if (car.driftPts >= 20) { const pay = Math.floor(car.driftPts * 0.4); save.money += pay; persist(); toast(`Drift bonus +$${pay}`, 2); }
+      if (car.driftPts >= 20) toast(`Drift ${Math.floor(car.driftPts)} points`, 1.5);
       car.driftPts = 0;
     }
   }
@@ -1060,29 +1174,19 @@ function stepCar(dt) {
       lap.last = lap.t; lap.count++;
       const isBest = !save.best || lap.t < save.best;
       if (isBest) save.best = lap.t;
-      save.money += CFG.LAP_REWARD; persist();
-      toast(`Lap ${lap.count}: ${fmtTime(lap.t)}${isBest ? '  NEW BEST!' : ''}  +$${CFG.LAP_REWARD}`, 4);
+      toast(`Lap ${lap.count}: ${fmtTime(lap.t)}${isBest ? '  NEW BEST!' : ''}`, 4);
       lap.t = 0; lap.maxDist = 0;
     }
   }
   lap.prevS = ls;
-
-  // gas station refuel
-  car.refuelling = false;
-  if (Math.hypot(car.x - gas.x, car.z - gas.z) < 8 && Math.abs(vf) < 2.5 && car.fuel < CFG.TANK && save.money > 0.5) {
-    const add = Math.min(8 * dt, CFG.TANK - car.fuel, save.money / CFG.FUEL_PRICE);
-    car.fuel += add; save.money -= add * CFG.FUEL_PRICE; car.refuelling = true;
-    if (car.fuel >= CFG.TANK - 0.01) persist();
-  }
 
   // delivery job
   if (mission.on) {
     mission.t -= dt;
     const d = Math.hypot(mission.x - car.x, mission.z - car.z);
     if (d < 9) {
-      const reward = Math.round(mission.d0 * 0.5 + mission.t * 4);
-      save.money += reward; persist(); mission.on = false; missionMarker.visible = false;
-      toast(`Delivered! +$${reward}`, 3);
+      mission.on = false; missionMarker.visible = false;
+      toast('Delivered!', 3);
     } else if (mission.t <= 0) {
       mission.on = false; missionMarker.visible = false; toast("Time's up - job failed", 3);
     }
@@ -1136,7 +1240,7 @@ function updateCamera(dt) {
     camera.lookAt(_v2);
   }
 
-  const fovTarget = (camMode === 1 ? 75 : 65) + speed01 * 12 + (car.nitroOn ? 6 : 0);
+  const fovTarget = (camMode === 1 ? 75 : 65) + speed01 * 12;
   fovCur += (fovTarget - fovCur) * k(5);
   if (Math.abs(camera.fov - fovCur) > 0.05) { camera.fov = fovCur; camera.updateProjectionMatrix(); }
 }
@@ -1173,10 +1277,6 @@ function drawMinimap() {
     mctx.fillStyle = '#fff'; mctx.fillRect(-6, -6, 12, 12);
     mctx.fillStyle = '#000'; mctx.font = 'bold 10px sans-serif'; mctx.textAlign = 'center'; mctx.textBaseline = 'middle'; mctx.fillText('S', 0, 1);
   });
-  marker(gas.x, gas.z, () => {
-    mctx.fillStyle = '#ffd000'; mctx.beginPath(); mctx.arc(0, 0, 7, 0, 6.2832); mctx.fill();
-    mctx.fillStyle = '#000'; mctx.font = 'bold 10px sans-serif'; mctx.textAlign = 'center'; mctx.textBaseline = 'middle'; mctx.fillText('F', 0, 1);
-  });
   if (mission.on) marker(mission.x, mission.z, () => {
     mctx.fillStyle = '#39ff6a'; mctx.strokeStyle = '#fff'; mctx.lineWidth = 2;
     mctx.beginPath(); mctx.arc(0, 0, 7, 0, 6.2832); mctx.fill(); mctx.stroke();
@@ -1197,29 +1297,24 @@ function drawMinimap() {
 let hudT = 0;
 function updateHUD(dt) {
   hudT += dt; if (hudT < 0.066) return; hudT = 0;
-  $('speed').textContent = Math.round(Math.hypot(car.vx, car.vz) * 2.237);
+  const speedKmh = Math.round(Math.hypot(car.vx, car.vz) * 3.6);
+  $('speedReadout').innerHTML = `${speedKmh}<small>KM/H</small>`;
+  const speedRatio = THREE.MathUtils.clamp(speedKmh / 330, 0, 1);
+  $('speedFill').style.transform = `translateX(-50%) rotate(${-42 + speedRatio * 264}deg)`;
   $('gear').textContent = car.vf < -0.3 ? 'R' : (Math.abs(car.vf) < 0.3 && !car.throttle ? 'N' : car.gear);
   const r = (car.rpm - IDLE) / (REDLINE - IDLE);
   const rb = $('rpmBar'); rb.style.width = (r * 100).toFixed(0) + '%'; rb.className = r > 0.9 ? 'red' : '';
   $('rpmTxt').textContent = `${Math.round(car.rpm)} RPM`;
   $('surface').textContent = !car.grounded ? 'AIRBORNE' : (car.surf === 2 ? 'GRAVEL' : (car.surf === 1 ? 'OFF TRACK' : ''));
-  $('money').textContent = `$${Math.floor(save.money)}`;
   $('lap').textContent = lap.running ? `Lap ${lap.count + 1}  ${fmtTime(lap.t)}` : 'Cross the start line to begin a lap';
   $('lapBest').textContent = `Last ${lap.last ? fmtTime(lap.last) : '--'}  |  Best ${save.best ? fmtTime(save.best) : '--'}`;
-  const fb = $('fuelBar'); fb.style.width = (car.fuel / CFG.TANK * 100).toFixed(0) + '%'; fb.className = car.fuel < 10 ? 'red' : '';
-  $('fuelTxt').textContent = car.refuelling ? 'refuelling...' : `${car.fuel.toFixed(0)} L`;
-  $('nitroBar').style.width = (car.nitro * 100).toFixed(0) + '%';
-  $('timeTxt').textContent = `Time: ${TODS[todIdx].name} | Map ${ZOOMS[mapZoomIdx]} m | Res ${pixelRatio.toFixed(2)}x`;
-  $('tuneTxt').textContent = `Engine Stage ${save.tune}/3 | Paint: ${PAINTS[save.paint].n}`;
-  $('mission').textContent = mission.on
-    ? `Job: ${Math.round(Math.hypot(mission.x - car.x, mission.z - car.z))} m | ${Math.max(0, Math.ceil(mission.t))} s`
-    : 'T: start a delivery job';
+  $('timeTxt').textContent = `Time: ${TODS[todIdx].name} | Quality ${CFG.QUALITY}p`;
   const dEl = $('drift');
   if (car.driftPts > 5) { dEl.style.display = 'block'; dEl.textContent = `DRIFT ${Math.floor(car.driftPts)}`; } else dEl.style.display = 'none';
 }
 
 // ===================== DYNAMIC RESOLUTION (keeps iGPU framerate up) =====================
-let fpsAcc = 0, fpsN = 0, fpsT = 0;
+let fpsAcc = 0, fpsN = 0, fpsT = 0, fpsFrames = 0, fpsClock = 0;
 function adaptResolution(dt) {
   if (!readyAt || performance.now() - readyAt < 4000) return;      // ignore load hitches
   fpsAcc += dt; fpsN++; fpsT += dt;
@@ -1228,16 +1323,32 @@ function adaptResolution(dt) {
   let np = pixelRatio;
   if (avg > 1 / 40) np = Math.max(CFG.MIN_PIXEL_RATIO, pixelRatio - 0.15);                      // slower than ~40 fps
   else if (avg < 1 / 57) np = Math.min(Math.min(devicePixelRatio, CFG.MAX_PIXEL_RATIO), pixelRatio + 0.1);   // faster than ~57 fps
-  if (Math.abs(np - pixelRatio) > 0.01) { pixelRatio = np; renderer.setPixelRatio(np); renderer.setSize(innerWidth, innerHeight); }
+  if (Math.abs(np - pixelRatio) > 0.01) {
+    pixelRatio = np;
+    
+    renderer.setPixelRatio(np);
+    const scale = CFG.QUALITY / 1080;
+    renderer.setSize(innerWidth * scale, innerHeight * scale, false);
+  }
 }
 
 // ===================== MAIN LOOP =====================
 setCam(0, true);
 $('gearMode').textContent = 'AUTO';
 const clock = new THREE.Clock();
+function renderPreviews() {
+  if (gameStarted) return;
+  if (preview.car.ready) {
+    preview.car.root.rotation.y += 0.003;
+    preview.car.renderer.render(preview.car.scene, preview.car.camera);
+  }
+  for (const item of Object.values(preview.maps)) if (item.ready) item.renderer.render(item.scene, item.camera);
+}
 function animate() {
   requestAnimationFrame(animate);
   const dt = Math.min(clock.getDelta(), 0.05);
+  fpsFrames++; fpsClock += dt;
+  if (fpsClock >= 0.5) { $('fps').textContent = `FPS ${Math.round(fpsFrames / fpsClock)}`; fpsFrames = 0; fpsClock = 0; }
   stepCar(dt);
   updateTOD(dt);
   updateCamera(dt);
@@ -1245,6 +1356,7 @@ function animate() {
   drawMinimap();
   updateHUD(dt);
   adaptResolution(dt);
+  renderPreviews();
   renderer.render(scene, camera);
 }
 animate();
